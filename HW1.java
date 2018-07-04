@@ -6,10 +6,12 @@ public class HW1{
     int[][] matrix = buildMatrix(matrixFile);
     displayMatrix(matrix);
     maxMatrix[][] = maxMatrix(matrix, matrix.length -1, matrix[0].length -1));
-    printPath(maxMatrix);
+    printPath(maxMatrix, matrix);
   }
 
-  public static void printPath(maxMatrix[][]){
+  public static void printPath(maxMatrix[][], actualMatrix[][]){
+    ArrayList pathX = new int ArrayList();
+    ArrayList pathY = new int ArrayList();
 
   }
 
