@@ -5,17 +5,125 @@ public class HW1{
     String matrixFile = "matrix.txt";
     int[][] matrix = buildMatrix(matrixFile);
     displayMatrix(matrix);
-    maxMatrix[][] = maxMatrix(matrix, matrix.length -1, matrix[0].length -1));
-    printPath(maxMatrix, matrix);
+    int[][] maxMatrix = maxMatrix(matrix, matrix.length -1, matrix[0].length -1);
+    ArrayList<Point> path = new ArrayList<Point>();
+    path.add(new Point(maxMatrix.length -1, maxMatrix[0].length-1));
+    ArrayList<Point> pathToPrint = findPath(maxMatrix, maxMatrix.length -1, maxMatrix[0].length-1, path, matrix);
   }
 
-  public static void printPath(maxMatrix[][], actualMatrix[][]){
-    ArrayList pathX = new int ArrayList();
-    ArrayList pathY = new int ArrayList();
+  public static ArrayList<Point> findPath(int maxMatrix[][], int l, int h, ArrayList<Point> path, int[][] matrix){
+    if(h != 0 && l != 0){
+      pathMax(maxMatrix[h][l-1], maxMatrix[h-1][l-1], maxMatrix[h-1][l], maxMatrix, l, h, path, matrix);
+    }
+    else if(h == 0 && l != 0){
+      path.add(new Point(l-1, 0));
+      findPath(maxMatrix, l-1, h, path, matrix);
 
+    }
+    else if(h != 0 && l == 0){
+      path.add(new Point(l, h-1));
+      findPath(maxMatrix, l, h-1, path, matrix);
+    }
+    else{
+      //path.add(new Point(0, 0));
+      // for(int i = path.size()-1; i >= 0; i--){
+      //   System.out.println("X: " + path.get(i).getX() + " Y: " + path.get(i).getY());
+      // }
+      System.out.println("got here");
+      printPath(path, matrix);
+    }
+    return new ArrayList<Point>();
   }
 
+  private static void pathMax(int x, int y, int z, int maxMatrix[][], int l, int h, ArrayList<Point> path, int[][] matrix)
+  {
+    if(x == y && y ==z){
+      System.out.println("in all");
+      path.add(new Point(l-1,h));
+      findPath(maxMatrix, l-1, h, path, matrix);
+      path.remove(path.size() -1);
+      path.add(new Point(l-1,h-1));
+      findPath(maxMatrix, l-1, h-1, path, matrix);
+      path.remove(path.size() -1);
+      path.add(new Point(l,h-1));
+      findPath(maxMatrix, l, h-1, path, matrix);
 
+    }
+    else if(x==y){
+      System.out.println("in left diag");
+      path.add(new Point(l-1,h));
+      findPath(maxMatrix, l-1, h, path, matrix);
+      path.remove(path.size() -1);
+      path.add(new Point(l-1,h-1));
+      findPath(maxMatrix, l-1, h-1, path, matrix);
+    }
+    else if(x==z){
+      System.out.println("in left up");
+      ArrayList<Point> newPath = new ArrayList<Point>();
+      for(int i = 0; i < path.size(); i++){
+        newPath.add(path.get(i));
+      }
+      path.add(new Point(l-1,h));
+      findPath(maxMatrix, l-1, h, path, matrix);
+      //path.remove(path.size() -1);
+      newPath.add(new Point(l,h-1));
+      findPath(maxMatrix, l, h-1, newPath, matrix);
+    }
+    else if(y==z){
+      System.out.println("in diag up");
+      path.add(new Point(l-1,h-1));
+      findPath(maxMatrix, l-1, h-1, path, matrix);
+      path.remove(path.size() -1);
+      path.add(new Point(l,h-1));
+      findPath(maxMatrix, l, h-1, path, matrix);
+    }
+    else if (x > y){
+      if(x > z){
+        path.add(new Point(l-1,h));
+        findPath(maxMatrix, l-1, h, path, matrix);
+      }
+      else{
+        path.add(new Point(l,h-1));
+        findPath(maxMatrix, l, h-1, path, matrix);
+      }
+    }
+    else{
+      if(y > z){
+        path.add(new Point(l-1,h-1));
+        findPath(maxMatrix, l-1, h-1, path, matrix);
+      }
+      else{
+        path.add(new Point(l,h-1));
+        findPath(maxMatrix, l, h-1, path, matrix);
+      }
+    }
+  }
+  public static void printPath(ArrayList<Point> path, int[][] matrix){
+    int h = 0;
+    int spaceCount = 0;
+    int increment = 0;
+    System.out.println("Solution:");
+    for(int i = path.size()-1; i >= 0; i--){
+      Point point = path.get(i);
+      if (point.getY() != h){
+        System.out.println();
+        for(int j = 0; j < point.getX() + spaceCount; j++){
+          System.out.print(" ");
+        }
+        System.out.print(matrix[point.getY()][point.getX()] + " " );
+        h = point.getY();
+      }
+      else{
+        System.out.print(matrix[point.getY()][point.getX()] + " " );
+        increment = (int) (Math.log10(matrix[point.getY()][point.getX()] + 1));
+        spaceCount += increment;
+        //System.out.print("SC: " + spaceCount);
+
+      }
+    }
+    System.out.println();
+
+  }
 
   //returns maximum of 3 integers x, y, or z
   private static int max(int x, int y, int z)
@@ -55,7 +163,7 @@ public class HW1{
       }
       System.out.println();
 
-      /* Construct rest of the tc array */
+      // Builds the rest of the totalSum array
       for (i = 1; i <= m; i++){
         for (j = 1; j <= n; j++){
           totalSum[i][j] = max(totalSum[i-1][j-1],
@@ -65,66 +173,10 @@ public class HW1{
       }
 
       System.out.println();
-      displayMatrix(totalSum);
-      return totalSum[][];
+      //displayMatrix(totalSum);
+      return totalSum;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  public static void longestPath(int[][] adjMatrix){
-    //========================
-    //Shortest path algorithum
-    //========================
-    int[] sum = new int[adjMatrix.length];
-    int[] path = new int[adjMatrix.length];
-    for(int i = 0;  i < adjMatrix.length; i++){
-       sum[i] = (int) Double.NEGATIVE_INFINITY;
-       path[i] = -1;
-    }
-    sum[0] = adjMatrix[0][0];
-    //============================================
-    //checks to see if node is pointing to another
-    //============================================
-    for(int i = 0; i < adjMatrix.length; i++){
-       for(int j = 0; j < adjMatrix.length; j++){
-         //CHANGE TO null later
-          if(adjMatrix[i][j] != 0){
-            //soething here for all longestPaths
-             if(sum[i] + adjMatrix[i][j] > sum[j]){
-                sum[j] = sum[i] + adjMatrix[i][j];
-                path[j] = i;
-             }
-          }
-       }
-    }
-    System.out.println(Arrays.toString(path));
-    System.out.println(sum[sum.length-1]);
-    // //=======================================
-    // //Backtracking to add words to stack
-    // //=======================================
-    // Stack<String> words = new Stack<String>();
-    // Stack<Integer> score = new Stack<Integer>();
-    // int x = getNumNodes() - 1;
-    // while(path[x] != -1){
-    //    words.push(adjMatrix[path[x]][x].getLabel());
-    //    score.push(adjMatrix[path[x]][x].getCombinedScore(lmScale));
-    //    x = path[x];
-    // }
-  }
   public static int[][] buildMatrix(String matrixFile){
     java.util.Scanner input = null;
     java.util.Scanner hl = null;
