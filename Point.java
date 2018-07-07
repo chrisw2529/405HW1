@@ -1,3 +1,4 @@
+//helper class for HW1.java
 public class Point{
   int x;
   int y;
